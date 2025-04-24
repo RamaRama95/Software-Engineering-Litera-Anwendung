@@ -1,0 +1,71 @@
+@startuml Klassendiagramm
+skinparam classAttributeIconSize 0
+
+interface ApplicationInterface {
+  +buchsuche(titel: String): List<Buch>
+  +buchdetails(id: int): Buch
+  +showRezensionen(buchId: int): List<Rezension>
+  +reviewHinzufuegen(id: int, r: Rezension): void
+}
+
+class Controller implements ApplicationInterface {
+  +buchsuche(titel: String): List<Buch>
+  +buchdetails(id: int): Buch
+  +showRezensionen(buchId: int): List<Rezension>
+  +reviewHinzufuegen(id: int, r: Rezension): void
+}
+
+class Buchkatalog {
+  - buecher: List<Buch>
+  + buchsuche(titel: String): List<Buch>
+  + buchDetails(id: int): Buch
+  + reviewHinzufuegen(id: int, r: Rezension): void
+  + showRezensionen(buchId: int): List<Rezension>
+}
+
+class StorageService {
+  + ladeBuecher(): List<Buch>
+  + ladeRezensionen(): List<Rezension>
+  + speichereRezension(r: Rezension): void
+}
+
+class Buch {
+  - Titel: String
+  - ISBN: String
+  - Erscheinungsjahr: Date
+  - Beschreibung: String
+}
+
+class Autor {
+  - Name: String
+}
+
+class Genre {
+  - Name: String
+  - Beschreibung: String
+}
+
+
+class Verlag {
+  - Name: String
+}
+
+class Rezension {
+  - Bewertung: int
+  - Kommentar: String
+  - Datum: Date
+}
+
+' Beziehungen
+Buch "1" -- "1..*" Autor
+Buch "1" -- "1" Genre
+Buch "1" -- "1" Verlag
+Buch "1" -- "0..*" Rezension
+
+Controller --> Buchkatalog
+Controller --> StorageService
+StorageService --> Buch
+StorageService --> Rezension
+Buchkatalog --> Buch
+Buchkatalog --> Rezension
+@enduml
