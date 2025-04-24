@@ -1,0 +1,67 @@
+@startuml
+' Titel des Diagramms
+title Aktivitätsdiagramm – Gesamtprozess der Bücherkatalog-Anwendung
+start
+' Partitionen definieren
+partition Benutzer {
+  :Anwendung starten;
+  :Buchsuche starten;
+  :Suchbegriff eingeben;
+}
+
+partition System {
+  :System durchsucht JSON-Datei;
+  if (Suchergebnisse gefunden?) then (ja)
+    :Trefferliste anzeigen;
+  else (nein)
+    :Meldung anzeigen: Keine Ergebnisse gefunden;
+  endif
+}
+
+partition Benutzer {
+  :Buch aus Trefferliste wählen;
+}
+
+partition System {
+    :Buchdetails anzeigen;
+}
+partition Benutzer {
+  :Clickt auf Show reviews;
+}
+
+partition System {
+    if (Rezensionen vorhanden?) then (ja)
+      :Rezensionen anzeigen;
+    else (nein)
+      :Meldung anzeigen: Keine Rezensionen vorhanden;
+  endif
+}
+
+partition Benutzer {
+  : click auf Write Review;
+  if (Rezension schreiben?) then (ja)
+    :Rezension eingeben;
+  else (nein)
+    :Zurück zur Trefferliste oder beenden;
+  endif
+}
+
+partition System {
+  if (Eingabe vollständig?) then (ja)
+    :Rezension speichern in JSON;
+    if (Speichern erfolgreich?) then (ja)
+      :Erfolgsmeldung anzeigen;
+    else (nein)
+      :Fehlermeldung beim Speichern anzeigen;
+    endif
+  else (nein)
+    :Hinweis anzeigen: Alle Richtig ausfüllen;
+  endif
+}
+
+partition Benutzer {
+  :Anwendung beenden;
+  stop
+}
+
+@enduml
