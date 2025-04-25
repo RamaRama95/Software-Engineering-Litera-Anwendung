@@ -1,0 +1,108 @@
+@startuml Buchverwaltungssystem_Sequenzdiagramm
+
+' Akteure und Objekte definieren
+actor Benutzer
+participant "Benutzeroberfläche" as UI
+participant "Katalog" as Katalog
+participant "Suchanfrage" as Suchanfrage
+participant "Buch" as Buch
+participant "Autor" as Autor
+participant "Genre" as Genre
+participant "Rezensionen" as Rezensionen
+participant "Verlag" as Verlag
+participant "Tag" as Tag
+
+' Titel des Diagramms
+title Buchverwaltungssystem - Sequenzdiagramm für Buchsuche und Detailanzeige
+
+' Sequenz 1: Buchsuche
+group Buchsuche
+    Benutzer -> UI: Suchparameter eingeben (Titel, Autor, Genre)
+    activate UI
+    
+    UI -> Suchanfrage: erstellen(titel, autor, genre)
+    activate Suchanfrage
+    
+    UI -> Katalog: suche(suchanfrage)
+    activate Katalog
+    
+    Katalog -> Buch: filtereNachKriterien(titel, autor, genre)
+    activate Buch
+    
+    Buch --> Katalog: gefilterte Buchliste
+    deactivate Buch
+    
+    Katalog --> UI: Suchergebnisse
+    deactivate Katalog
+    
+    UI --> Benutzer: Zeige Suchergebnisse an
+    deactivate UI
+end
+
+' Sequenz 2: Buchdetails anzeigen
+group Buchdetails anzeigen
+    Benutzer -> UI: Buch auswählen
+    activate UI
+    
+    UI -> Katalog: zeigeDetails(buch)
+    activate Katalog
+    
+    Katalog -> Buch: getDetails()
+    activate Buch
+    
+    Buch -> Autor: getDetails()
+    activate Autor
+    Autor --> Buch: Autordetails
+    deactivate Autor
+    
+    Buch -> Genre: getDetails()
+    activate Genre
+    Genre --> Buch: Genredetails
+    deactivate Genre
+    
+    Buch -> Verlag: getDetails()
+    activate Verlag
+    Verlag --> Buch: Verlagdetails
+    deactivate Verlag
+    
+    Buch -> Rezensionen: getAll()
+    activate Rezensionen
+    Rezensionen --> Buch: Liste aller Rezensionen
+    deactivate Rezensionen
+    
+    Buch -> Tag: getAll()
+    activate Tag
+    Tag --> Buch: Liste aller Tags
+    deactivate Tag
+    
+    Buch --> Katalog: Vollständige Buchdetails
+    deactivate Buch
+    
+    Katalog --> UI: Buchdetails
+    deactivate Katalog
+    
+    UI --> Benutzer: Zeige Buchdetails an
+    deactivate UI
+end
+
+' Sequenz 3: Rezension hinzufügen
+group Rezension hinzufügen
+    Benutzer -> UI: Rezension eingeben (Text, Bewertung)
+    activate UI
+    
+    UI -> Rezensionen: erstellen(text, bewertung, datum, buch)
+    activate Rezensionen
+    
+    Rezensionen -> Buch: addRezension(rezension)
+    activate Buch
+    Buch --> Rezensionen: Bestätigung
+    deactivate Buch
+    
+    Rezensionen --> UI: Bestätigung
+    deactivate Rezensionen
+    
+    UI --> Benutzer: Bestätigung anzeigen
+    deactivate UI
+end
+
+@enduml
